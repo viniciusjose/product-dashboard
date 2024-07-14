@@ -7,6 +7,7 @@ export namespace TypeUpdate {
     id: number
     name: string
     description?: string
+    taxes?: Array<{ id: number }>
   }
 
   export type Result = {

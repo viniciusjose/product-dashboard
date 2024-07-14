@@ -4,7 +4,7 @@ import {
 } from "@/components/shadcn/ui"
 import React, { forwardRef } from "react"
 import { FieldError } from "react-hook-form"
-import { clsx } from 'clsx'
+import { cn } from '@/lib'
 
 interface InputProps extends React.ComponentProps<typeof ShadcnInput> {
   errors?: FieldError
@@ -26,7 +26,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((
       {!labelDisabled && (
         <ShadcnLabel
           htmlFor={placeholder}
-          className={clsx("text-gray-500 mt-2 mb-1", { "text-red-500": errors?.message })}
+          className={cn("text-gray-500 mt-2 mb-1", { "text-red-500": errors?.message })}
         >
           {label}
           {required ? "*" : ""}
@@ -38,7 +38,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((
         autoCapitalize="none"
         autoCorrect="off"
         disabled={isLoading || disabled}
-        className={clsx("dark:bg-secondary", className, {
+        className={cn("dark:bg-secondary", className, {
           "border-red-500": errors?.message,
         })}
         {...props}

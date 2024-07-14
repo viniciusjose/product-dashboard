@@ -7,7 +7,8 @@ export class RemoteTypeUpdate implements TypeUpdate {
       `types/${input.id}`,
       {
         name: input.name,
-        description: input.description
+        description: input.description,
+        taxes: input.taxes
       }
     )
 

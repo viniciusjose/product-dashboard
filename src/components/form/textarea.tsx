@@ -1,7 +1,7 @@
 import { Label as ShadcnLabel, Textarea as ShadcnTextarea } from '@/components/shadcn/ui'
 import React, { forwardRef } from 'react'
 import { FieldError } from 'react-hook-form'
-import { clsx } from 'clsx'
+import { cn } from '@/lib'
 
 interface TextareaProps extends React.ComponentProps<typeof ShadcnTextarea> {
   errors?: FieldError
@@ -21,7 +21,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {!labelDisabled && (
           <ShadcnLabel
             htmlFor={placeholder}
-            className={clsx('text-gray-500 mt-2 mb-1', { 'text-red-500': errors?.message })}
+            className={cn('text-gray-500 mt-2 mb-1', { 'text-red-500': errors?.message })}
           >
             {label}
             {required ? '*' : ''}
@@ -31,12 +31,12 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           placeholder={placeholder}
           disabled={isLoading}
-          className={clsx('dark:bg-secondary', className, {
+          className={cn('dark:bg-secondary', className, {
             'border-red-500': errors?.message
           })}
           {...props}
         />
-        {errors?.message && <span className={clsx('text-xs text-red-500', className)}>{errors.message as string}</span>}
+        {errors?.message && <span className={cn('text-xs text-red-500', className)}>{errors.message as string}</span>}
       </>
     )
   }

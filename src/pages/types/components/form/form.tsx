@@ -16,8 +16,9 @@ import { ToastAction } from '@/components/shadcn/ui/toast.tsx'
 import { useToast } from '@/components/shadcn/ui'
 import { TypesFormContent } from '@/pages/types/components/form/form-content.tsx'
 import { UseMutateAsyncFunction } from '@tanstack/react-query'
-import { TypeShow, TypeStore, TypeUpdate } from '@/interfaces'
+import { ListTaxes, TypeShow, TypeStore, TypeUpdate } from '@/interfaces'
 import { useCallback, useEffect } from 'react'
+import { useListTaxes } from '@/hooks'
 
 export type TypesFormProps = {
   id?: number
@@ -31,13 +32,23 @@ export type TypesFormProps = {
 }
 
 const formValidationSchema = z.object({
-  name: z.string({ required_error: 'Nome é obrigatório'}).trim().min(1, 'Nome é obrigatório'),
+  name: z.string({ required_error: 'Nome é obrigatório' }).trim().min(1, 'Nome é obrigatório'),
+  taxes: z.array(z.object({ id: z.number() })).optional(),
   description: z.string().max(255, 'Descrição deve ter no máximo 255 caracteres').nullable()
 })
 
 export type FormDataSchema = z.infer<typeof formValidationSchema>
 
-export const TypesForm = ({ id, setIdEdit, open, setOpen, refetch, mutateAsync, showAsync, updateAsync }: TypesFormProps) => {
+export const TypesForm = ({
+  id,
+  setIdEdit,
+  open,
+  setOpen,
+  refetch,
+  mutateAsync,
+  showAsync,
+  updateAsync
+}: TypesFormProps) => {
   const {
     register,
     handleSubmit,
@@ -51,8 +62,13 @@ export const TypesForm = ({ id, setIdEdit, open, setOpen, refetch, mutateAsync, 
     ...props
   } = useForm<FormDataSchema>({
     mode: 'onSubmit',
-    resolver: zodResolver(formValidationSchema)
+    resolver: zodResolver(formValidationSchema),
+    defaultValues: {
+      taxes: []
+    }
   })
+
+  const { data: listTaxes } = useListTaxes()
 
   const completeFormProps: any = { register, handleSubmit, watch, setError, clearErrors, control, ...props }
 
@@ -66,23 +82,24 @@ export const TypesForm = ({ id, setIdEdit, open, setOpen, refetch, mutateAsync, 
 
   async function onSubmit(event: FormDataSchema) {
     try {
+      if (!id) {
+        await mutateAsync({
+          name: event.name,
+          description: event?.description,
+          taxes: event.taxes
+        })
+      }
+
       if (id) {
         await updateAsync({
           id,
           name: event.name,
-          description: event?.description ?? undefined
-        })
-      }
-
-      if (!id) {
-        await mutateAsync({
-          name: event.name,
-          description: event?.description
+          description: event?.description ?? undefined,
+          taxes: event.taxes
         })
       }
 
       reset()
-
       closeModal(false)
 
       toast({
@@ -107,6 +124,7 @@ export const TypesForm = ({ id, setIdEdit, open, setOpen, refetch, mutateAsync, 
       const type = await showAsync({ id: id as number })
       setValue('name', type.name)
       setValue('description', type?.description ?? null)
+      setValue('taxes', [])
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -138,7 +156,12 @@ export const TypesForm = ({ id, setIdEdit, open, setOpen, refetch, mutateAsync, 
           </DialogHeader>
           <Form {...completeFormProps}>
             <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-              <TypesFormContent errors={errors} register={register}  />
+              <TypesFormContent
+                listTaxes={listTaxes as ListTaxes.Result}
+                register={register}
+                control={control}
+                errors={errors}
+              />
 
               <DialogFooter className="mt-4">
                 <DialogTrigger asChild>

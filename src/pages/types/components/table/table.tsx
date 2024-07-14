@@ -1,26 +1,25 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shadcn/ui/table.tsx'
-import { ListTypes } from '@/interfaces'
-import {
-  Button,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem, DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/shadcn/ui'
-import { MoreHorizontal, Pen } from 'lucide-react'
+import {  ListTypes } from '@/interfaces'
+import { MoreHorizontal } from 'lucide-react'
+import { RowEditAction } from '@/pages/types/components/table/row-edit-action'
+import { RowDestroyAction } from '@/pages/types/components/table/row-delete-action.tsx'
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/shadcn/ui'
+import { EmptyRow } from '@/components/table'
 
 type TableComponentProps = {
   list: ListTypes.Result
   onEdit: (id: number) => void
+  onDestroy: (id: number) => void
 }
-export const TableComponent = ({ list, onEdit }: TableComponentProps) => {
-
+export const TableComponent = ({ list, onEdit, onDestroy }: TableComponentProps) => {
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            <TableHead className="text-center">
+              ID
+            </TableHead>
             <TableHead>Nome</TableHead>
             <TableHead>Descrição</TableHead>
             <TableHead>Criado em</TableHead>
@@ -29,9 +28,9 @@ export const TableComponent = ({ list, onEdit }: TableComponentProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {list && list.map((item) => (
+          {list?.length ? list.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.id}</TableCell>
+                <TableCell className="text-center">{item.id}</TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.description}</TableCell>
                 <TableCell>{new Intl.DateTimeFormat('pt-BR', {dateStyle: "short", timeStyle: "short"}).format(new Date(item.created_at))}</TableCell>
@@ -45,16 +44,16 @@ export const TableComponent = ({ list, onEdit }: TableComponentProps) => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => onEdit(item.id)}>
-                        <Pen className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-                        Editar
-                      </DropdownMenuItem>
+                      <RowEditAction onEdit={onEdit} id={item.id}/>
                       <DropdownMenuSeparator/>
+                      <RowDestroyAction onDestroy={onDestroy} id={item.id} />
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-          ))}
+          )): <>
+            <EmptyRow colSpan={6} />
+          </>}
         </TableBody>
       </Table>
     </div>
