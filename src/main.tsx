@@ -2,9 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import '@/global.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { App, TaxesPage, TypesPage } from '@/pages'
+import { App, TaxesPage, TypesPage, PageNotFound, ProductsPage } from '@/pages'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { PageNotFound } from '@/pages/NotFound'
 
 const router = createBrowserRouter([
     {
@@ -12,6 +11,10 @@ const router = createBrowserRouter([
         element: <App/>,
         errorElement: <PageNotFound/>,
         children: [
+          {
+            path: 'products',
+            element: <ProductsPage/>,
+          },
           {
             path: 'types',
             element: <TypesPage/>,

@@ -43,7 +43,7 @@ const InputMultipleSelect = forwardRef<HTMLInputElement, InputMultipleSelectProp
           name={id}
           render={({ field }) => (
         <div>
-          <Label className="mt-2">{label}</Label>
+          <Label className="text-gray-500 mt-2 mb-1">{label}</Label>
           <Command>
             <CommandInput placeholder={placeholder} />
             <CommandList>

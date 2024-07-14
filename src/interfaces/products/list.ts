@@ -1,15 +1,16 @@
-export interface ListTypes {
-  list(): Promise<ListTypes.Result>
+export interface ListProducts {
+  list(): Promise<ListProducts.Result>
 }
 
-export namespace ListTypes {
+export namespace ListProducts {
   export type Result = Array<{
     id: number
     name: string
-    description?: string
-    taxes: Array<{
+    price: number
+    types: Array<{
       id: string
       name: string
+      description?: string
       created_at: string
       updated_at?: string
     }> | []

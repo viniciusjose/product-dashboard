@@ -1,8 +1,8 @@
-export interface TypeShow {
-  show(input: TypeShow.Params): Promise<TypeShow.Result>
+export interface ProductShow {
+  show(input: ProductShow.Params): Promise<ProductShow.Result>
 }
 
-export namespace TypeShow {
+export namespace ProductShow {
   export type Params = {
     id: number
   }
@@ -10,8 +10,8 @@ export namespace TypeShow {
   export type Result = {
     id: number
     name: string
-    description?: string
-    taxes: Array<{
+    price: number
+    types: Array<{
       id: number
       name: string
       description?: string

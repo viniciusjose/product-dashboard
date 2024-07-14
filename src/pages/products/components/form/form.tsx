@@ -14,32 +14,34 @@ import { z } from 'zod'
 import { Button } from '@/components/shadcn/ui/button.tsx'
 import { ToastAction } from '@/components/shadcn/ui/toast.tsx'
 import { useToast } from '@/components/shadcn/ui'
-import { TypesFormContent } from '@/pages/types/components/form/form-content.tsx'
 import { UseMutateAsyncFunction } from '@tanstack/react-query'
-import { ListTaxes, TypeShow, TypeStore, TypeUpdate } from '@/interfaces'
+import { ListTypes, ProductShow, ProductStore, ProductUpdate } from '@/interfaces'
 import { useCallback, useEffect } from 'react'
-import { useListTaxes } from '@/hooks'
+import { ProductFormContent } from '@/pages/products/components/form/form-content.tsx'
+import { useListTypes } from '@/hooks'
 
-export type TypesFormProps = {
+export type ProductsFormProps = {
   id?: number
   setIdEdit: (id: number | undefined) => void
   open: boolean
   setOpen: (open: boolean) => void
   refetch: () => void
-  mutateAsync: UseMutateAsyncFunction<TypeStore.Result, unknown, TypeStore.Params, unknown>
-  showAsync: UseMutateAsyncFunction<TypeShow.Result, unknown, TypeShow.Params, unknown>
-  updateAsync: UseMutateAsyncFunction<TypeUpdate.Result, unknown, TypeUpdate.Params, unknown>
+  mutateAsync: UseMutateAsyncFunction<ProductStore.Result, unknown, ProductStore.Params, unknown>
+  showAsync: UseMutateAsyncFunction<ProductShow.Result, unknown, ProductShow.Params, unknown>
+  updateAsync: UseMutateAsyncFunction<ProductUpdate.Result, unknown, ProductUpdate.Params, unknown>
 }
 
 const formValidationSchema = z.object({
   name: z.string({ required_error: 'Nome é obrigatório' }).trim().min(1, 'Nome é obrigatório'),
-  taxes: z.array(z.object({ id: z.coerce.number() })).min(1, 'Selecione ao menos um imposto'),
-  description: z.string().max(255, 'Descrição deve ter no máximo 255 caracteres').nullable()
+  types: z.array(z.object({ id: z.coerce.number() })).min(1, 'Selecione ao menos um imposto'),
+  price: z.string()
+    .trim()
+    .min(1, { message: 'Preço deve ser no mínimo 1' })
 })
 
 export type FormDataSchema = z.infer<typeof formValidationSchema>
 
-export const TypesForm = ({
+export const ProductsForm = ({
   id,
   setIdEdit,
   open,
@@ -48,7 +50,7 @@ export const TypesForm = ({
   mutateAsync,
   showAsync,
   updateAsync
-}: TypesFormProps) => {
+}: ProductsFormProps) => {
   const {
     register,
     handleSubmit,
@@ -64,14 +66,12 @@ export const TypesForm = ({
     mode: 'onSubmit',
     resolver: zodResolver(formValidationSchema),
     defaultValues: {
-      taxes: []
+      types: []
     }
   })
 
-  const { data: listTaxes } = useListTaxes()
-
   const completeFormProps: any = { register, handleSubmit, watch, setError, clearErrors, control, ...props }
-
+  const { data: listTypes } = useListTypes()
   const { toast } = useToast()
 
   function closeModal(modalStatus: boolean): void {
@@ -85,8 +85,8 @@ export const TypesForm = ({
       if (!id) {
         await mutateAsync({
           name: event.name,
-          description: event?.description,
-          taxes: event.taxes
+          price: parseFloat(event.price.replace(',', '.')),
+          types: event.types
         })
       }
 
@@ -94,8 +94,8 @@ export const TypesForm = ({
         await updateAsync({
           id,
           name: event.name,
-          description: event?.description ?? undefined,
-          taxes: event.taxes
+          price: parseFloat(event.price.replace(',', '.')),
+          types: event.types
         })
       }
 
@@ -105,7 +105,7 @@ export const TypesForm = ({
       toast({
         variant: 'default',
         title: 'Sucesso!',
-        description: 'A categoria foi salva com sucesso'
+        description: 'Imposto salvo com sucesso'
       })
 
       refetch()
@@ -113,23 +113,23 @@ export const TypesForm = ({
       toast({
         variant: 'destructive',
         title: 'Ops! Algo deu errado!',
-        description: 'Não foi possível salvar a categoria',
+        description: 'Não foi possível salvar o imposto',
         action: <ToastAction altText="Fechar">Fechar</ToastAction>
       })
     }
   }
 
-  const showType = useCallback(async () => {
+  const showProduct = useCallback(async () => {
     try {
-      const type = await showAsync({ id: id as number })
-      setValue('name', type.name)
-      setValue('description', type?.description ?? null)
-      setValue('taxes', type.taxes?.map((tax) => ({ id: tax.id })))
+      const product = await showAsync({ id: id as number })
+      setValue('name', product.name)
+      setValue('price', product.price)
+      setValue('types', product.types.map((type) => ({ id: type.id })))
     } catch (error) {
       toast({
         variant: 'destructive',
         title: 'Ops! Algo deu errado!',
-        description: 'Não foi possível buscar a categoria',
+        description: 'Não foi possível buscar o imposto',
         action: <ToastAction altText="Fechar">Fechar</ToastAction>
       })
     }
@@ -138,29 +138,29 @@ export const TypesForm = ({
   useEffect(() => {
     reset()
     if (id) {
-      showType()
+      showProduct()
     } else {
       setIdEdit(undefined)
     }
-  }, [id, reset, showType, setIdEdit])
+  }, [id, reset, showProduct, setIdEdit])
 
   return (
     <div className="flex flex-row place-content-center">
       <Dialog open={open} onOpenChange={closeModal}>
         <DialogContent className="sm:max-w-[725px]">
           <DialogHeader className="gap-2">
-            <DialogTitle>Cadastro de categoria</DialogTitle>
+            <DialogTitle>Cadastro de produtos</DialogTitle>
             <DialogDescription>
-              🚀 Cadastre suas categorias e facilite a busca e organização de seus produtos.
+              🚀 Cadastre sua tabela de  produtos e organize suas vendas.
             </DialogDescription>
           </DialogHeader>
           <Form {...completeFormProps}>
             <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-              <TypesFormContent
-                listTaxes={listTaxes as ListTaxes.Result}
+              <ProductFormContent
                 register={register}
-                control={control}
                 errors={errors}
+                control={control}
+                listTypes={listTypes as ListTypes.Result}
               />
 
               <DialogFooter className="mt-4">
