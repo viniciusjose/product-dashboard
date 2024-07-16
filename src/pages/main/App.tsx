@@ -21,7 +21,7 @@ export function App() {
             />
           </div>
         </header>
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-1 xl:grid-cols-1">
+        <main className="p-4 sm:px-6">
           <Outlet />
           <Toaster />
           <ReactQueryDevtools />

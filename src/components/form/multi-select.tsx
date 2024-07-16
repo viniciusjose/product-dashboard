@@ -69,7 +69,7 @@ const InputMultipleSelect = forwardRef<HTMLInputElement, InputMultipleSelectProp
                       <Checkbox
                         className="mr-2"
                         id={`checkbox-event-${option.value}`}
-                        checked={!!field.value?.find(({ id }: any) => id === option.value) ?? false}
+                        checked={!!(field.value?.find(({ id }: any) => id === option.value) ?? false)}
                         onCheckedChange={(checked) => {
                           return checked
                             ? field.onChange([...field.value, { id: option.value }])

@@ -29,7 +29,7 @@ export const RowDestroyAction = ({ onDestroy, id }: RowDestroyActionProps) => {
          <AlertDialogContent>
            <AlertDialogHeader>
              <AlertDialogTitle>
-               Confirma a remoção categoria
+               Confirma a remoção do produto
              </AlertDialogTitle>
              <AlertDialogDescription>
                Teste de descrição

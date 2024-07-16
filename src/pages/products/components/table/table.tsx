@@ -1,8 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shadcn/ui/table.tsx'
 import { ListProducts } from '@/interfaces'
 import { MoreHorizontal } from 'lucide-react'
-import { RowEditAction } from '@/pages/types/components/table/row-edit-action'
-import { RowDestroyAction } from '@/pages/types/components/table/row-delete-action.tsx'
+import { RowEditAction } from '@/pages/products/components/table/row-edit-action'
+import { RowDestroyAction } from '@/pages/products/components/table/row-delete-action.tsx'
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/shadcn/ui'
 import { BadgeColumn, EmptyRow } from '@/components/table'
 
