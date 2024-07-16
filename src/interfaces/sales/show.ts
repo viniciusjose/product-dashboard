@@ -16,7 +16,7 @@ export namespace SaleShow {
     address_number: number
     description?: string
     amount: number
-    taxes_amount: number
+    taxesAmount: number
     totalAmount: number
     items: Array<{
       id: string

@@ -11,20 +11,31 @@ import {
 import { EyeOff, PlusCircle, ShoppingBag } from 'lucide-react'
 import { UseMutateAsyncFunction } from '@tanstack/react-query'
 import { SaleShow } from '@/interfaces'
-import { useCallback, useEffect } from 'react'
-import { SkeletonComponent } from '@/pages/sales/components/order/components'
+import { useCallback, useEffect, useState } from 'react'
+import { AddProductForm, SkeletonComponent } from '@/pages/sales/components/order/components'
+import { useListProducts } from '@/hooks'
 
 type OrderComponentProps = {
   id: number | undefined
-  setId: (id: number |  undefined) => void
+  setId: (id: number | undefined) => void
   saleShowAsync: UseMutateAsyncFunction<SaleShow.Result, unknown, SaleShow.Params, unknown>
-  setSale: (sale: SaleShow.Result |  undefined) => void
-  sale: SaleShow.Result |  undefined
+  setSale: (sale: SaleShow.Result | undefined) => void
+  listSaleRefetch: () => void
+  sale: SaleShow.Result | undefined
   isPending: boolean
 }
-export const OrderComponent = ({ setId, id, saleShowAsync, isPending, setSale, sale }: OrderComponentProps) => {
+export const OrderComponent = ({
+ setId,
+ id,
+ saleShowAsync,
+ listSaleRefetch,
+ isPending,
+ setSale,
+ sale
+}: OrderComponentProps) => {
+  const { data: listProducts } = useListProducts()
   const { toast } = useToast()
-
+  const [open, setOpen] = useState(false)
   const saleShow = useCallback(async () => {
     try {
       const sale = await saleShowAsync({ id: id as number })
@@ -49,6 +60,16 @@ export const OrderComponent = ({ setId, id, saleShowAsync, isPending, setSale, s
     setSale(undefined)
     setId(undefined)
   }
+
+  function updateOrderCard(id: number) {
+    listSaleRefetch()
+    setId(undefined)
+
+    setTimeout(function() {
+      setId(id)
+    }, 300)
+  }
+
   return (
     <>
       {!isPending && sale ? (
@@ -70,12 +91,21 @@ export const OrderComponent = ({ setId, id, saleShowAsync, isPending, setSale, s
               </CardDescription>
             </div>
             <div className="ml-auto flex items-center gap-1">
-              <Button size="sm" variant="outline" className="h-8 gap-1">
+              <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => setOpen(true)}>
                 <PlusCircle className="h-3.5 w-3.5" />
                 <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
                   Produto
                 </span>
               </Button>
+
+              <AddProductForm
+                id={id}
+                open={open}
+                setOpen={setOpen}
+                listProducts={listProducts}
+                updateOrderCard={updateOrderCard}
+              />
+
               <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => hideSale()}>
                 <EyeOff className="h-3.5 w-3.5" />
               </Button>
@@ -132,7 +162,7 @@ export const OrderComponent = ({ setId, id, saleShowAsync, isPending, setSale, s
                         style: 'currency',
                         currency: 'BRL',
                         maximumFractionDigits: 2
-                      }).format(sale.taxes_amount ?? 0)}
+                      }).format(sale.taxesAmount ?? 0)}
                     </span>
                 </li>
                 <li className="flex items-center justify-between font-semibold">

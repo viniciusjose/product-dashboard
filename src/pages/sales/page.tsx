@@ -85,7 +85,15 @@ export const SalesPage = () => {
         </Card>
       </div>
       <div>
-        <OrderComponent id={id} setId={setId} saleShowAsync={saleShowAsync} isPending={pendingSaleShow} sale={sale} setSale={setSale}/>
+        <OrderComponent
+          id={id}
+          setId={setId}
+          saleShowAsync={saleShowAsync}
+          isPending={pendingSaleShow}
+          sale={sale}
+          setSale={setSale}
+          listSaleRefetch={refetch}
+        />
       </div>
     </div>
 

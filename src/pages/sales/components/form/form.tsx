@@ -9,13 +9,12 @@ import {
   Form, ToastAction, useToast
 } from '@/components/shadcn/ui'
 import { UseMutateAsyncFunction } from '@tanstack/react-query'
-import { ListProducts, SaleShow, SaleStore, SaleUpdate } from '@/interfaces'
+import { SaleShow, SaleStore, SaleUpdate } from '@/interfaces'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useCallback, useEffect } from 'react'
 import { SalesFormContent } from '@/pages/sales/components/form/form-content.tsx'
-import { useListProducts } from '@/hooks'
 import { ShoppingBag } from 'lucide-react'
 
 export type SalesFormProps = {
@@ -63,7 +62,6 @@ export const SalesForm = ({ id, open, setOpen, setIdEdit, setIdShow, setSale, sh
   })
 
   const { toast } = useToast()
-  const { data: listProducts } = useListProducts()
   const completeFormProps: any = { register, handleSubmit, watch, setError, clearErrors, control, ...props }
 
   function closeModal(modalStatus: boolean): void {
@@ -115,7 +113,6 @@ export const SalesForm = ({ id, open, setOpen, setIdEdit, setIdShow, setSale, sh
 
       refetch()
     } catch (error) {
-      console.log(error)
       toast({
         variant: 'destructive',
         title: 'Ops! Algo deu errado!',
@@ -171,8 +168,6 @@ export const SalesForm = ({ id, open, setOpen, setIdEdit, setIdShow, setSale, sh
               <SalesFormContent
                 register={register}
                 errors={errors}
-                control={control}
-                listProducts={listProducts as ListProducts.Result}
               />
 
               <DialogFooter className="mt-4">

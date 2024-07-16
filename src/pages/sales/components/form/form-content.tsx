@@ -1,13 +1,10 @@
 import { Input, Textarea } from '@/components/form'
-import { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
+import { FieldErrors, UseFormRegister } from 'react-hook-form'
 import { FormDataSchema } from '@/pages/sales/components/form'
-import { ListProducts } from '@/interfaces'
 
 type ProductFormProps = {
   errors: FieldErrors<FormDataSchema>
   register: UseFormRegister<FormDataSchema>
-  control: Control<FormDataSchema>
-  listProducts: ListProducts.Result
 }
 
 export const SalesFormContent = ({ errors, register }: ProductFormProps) => {
