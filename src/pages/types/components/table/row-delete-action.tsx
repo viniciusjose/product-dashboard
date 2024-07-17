@@ -33,7 +33,7 @@ export const RowDestroyAction = ({ onDestroy, id }: RowDestroyActionProps) => {
                A remoção é irreversível, deseja continuar?
              </AlertDialogTitle>
              <AlertDialogDescription>
-               A remoção deste produto removerá todos os registros associados a ele.
+               A remoção desta categoria removerá todos os registros associados a ela.
              </AlertDialogDescription>
            </AlertDialogHeader>
            <AlertDialogFooter>

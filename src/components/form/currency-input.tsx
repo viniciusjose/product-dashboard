@@ -2,6 +2,7 @@ import CurrencyInput from 'react-currency-input-field'
 import { FormField, Label } from '@/components/shadcn/ui'
 import { cn } from '@/lib'
 import { Control, FieldError } from 'react-hook-form'
+import { IntlConfig } from 'react-currency-input-field/dist/components/CurrencyInputProps'
 
 type InputCurrencyProps = {
   placeholder: string
@@ -10,9 +11,12 @@ type InputCurrencyProps = {
   required?: boolean
   errors?: FieldError
   control: Control<any, any>
+  intlConfig?: IntlConfig | undefined
+  suffix?: string | undefined
+  fixedDecimalLength?: number | undefined
   className?: string
 }
-export const InputCurrency = ({ placeholder, name, label, required, errors, control, className}: InputCurrencyProps) => {
+export const InputCurrency = ({ placeholder, name, label, required, errors, control, className, intlConfig, suffix, fixedDecimalLength }: InputCurrencyProps) => {
   return  (
     <div className="flex flex-col gap gap-0">
       <Label
@@ -33,11 +37,12 @@ export const InputCurrency = ({ placeholder, name, label, required, errors, cont
             className={cn('dark:bg-secondary flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
               className,
               {
-              'border-red-500': errors?.message
+                'border-red-500': errors?.message
               }
             )}
-            intlConfig={{ locale: 'pt-BR', currency: 'BRL' }}
-            fixedDecimalLength={2}
+            intlConfig={intlConfig ?? undefined}
+            suffix={suffix ?? undefined}
+            fixedDecimalLength={fixedDecimalLength ?? undefined}
           />
         )}
       />

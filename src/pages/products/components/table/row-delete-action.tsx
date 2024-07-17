@@ -1,10 +1,9 @@
-import { CircleOff } from 'lucide-react'
+import { AlertCircleIcon, CircleOff } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -28,12 +27,10 @@ export const RowDestroyAction = ({ onDestroy, id }: RowDestroyActionProps) => {
          </AlertDialogTrigger>
          <AlertDialogContent>
            <AlertDialogHeader>
-             <AlertDialogTitle>
-               Confirma a remoção do produto
+             <AlertDialogTitle className="flex flex-row gap-2 items-center">
+               <AlertCircleIcon className="text-red-500 " />
+               A remoção é irreversível, deseja continuar?
              </AlertDialogTitle>
-             <AlertDialogDescription>
-               Teste de descrição
-             </AlertDialogDescription>
            </AlertDialogHeader>
            <AlertDialogFooter>
              <AlertDialogCancel>

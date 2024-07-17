@@ -10,3 +10,4 @@ export class RemoteProductDestroy implements ProductDestroy {
     return httpResponse.data
   }
 }
+

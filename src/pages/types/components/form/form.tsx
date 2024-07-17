@@ -33,7 +33,7 @@ export type TypesFormProps = {
 
 const formValidationSchema = z.object({
   name: z.string({ required_error: 'Nome é obrigatório' }).trim().min(1, 'Nome é obrigatório'),
-  taxes: z.array(z.object({ id: z.coerce.number() })).min(1, 'Selecione ao menos um imposto'),
+  taxes: z.array(z.object({ id: z.coerce.number() })).optional(),
   description: z.string().max(255, 'Descrição deve ter no máximo 255 caracteres').nullable()
 })
 

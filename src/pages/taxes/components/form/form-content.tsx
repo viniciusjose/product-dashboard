@@ -1,13 +1,14 @@
-import { Input } from '@/components/form'
-import { FieldErrors, UseFormRegister } from 'react-hook-form'
+import { Input, InputCurrency } from '@/components/form'
+import { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
 import { FormDataSchema } from '@/pages/taxes/components/form/form.tsx'
 
 type TaxesFormProps = {
   errors: FieldErrors<FormDataSchema>
   register: UseFormRegister<FormDataSchema>
+  control: Control<FormDataSchema>
 }
 
-export const TaxesFormContent = ({ errors, register }: TaxesFormProps) => {
+export const TaxesFormContent = ({ errors, register, control }: TaxesFormProps) => {
   return (
     <div className="grid  grid-cols-2 gap-2">
       <div>
@@ -20,11 +21,15 @@ export const TaxesFormContent = ({ errors, register }: TaxesFormProps) => {
         />
       </div>
       <div>
-        <Input
-          label="Porcentagem"
-          placeholder="Digite a porcentagem do imposto"
+        <InputCurrency
+          label={'Porcentagem'}
+          name={'percentage'}
+          placeholder={'Digite a porcentagem do imposto'}
           errors={errors.percentage}
-          {...register('percentage')}
+          intlConfig={undefined}
+          suffix={' %'}
+          required={true}
+          control={control}
         />
       </div>
     </div>

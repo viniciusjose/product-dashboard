@@ -66,7 +66,8 @@ export const ProductsForm = ({
     mode: 'onSubmit',
     resolver: zodResolver(formValidationSchema),
     defaultValues: {
-      types: []
+      types: [],
+      price: ''
     }
   })
 
@@ -123,7 +124,7 @@ export const ProductsForm = ({
     try {
       const product = await showAsync({ id: id as number })
       setValue('name', product.name)
-      setValue('price', product.price as unknown as string)
+      setValue('price', new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2 }).format(product.price).replace('.', ''))
       setValue('types', product.types.map((type) => ({ id: type.id })))
     } catch (error) {
       toast({

@@ -32,7 +32,10 @@ export type TaxesFormProps = {
 
 const formValidationSchema = z.object({
   name: z.string({ required_error: 'Nome é obrigatório' }).trim().min(1, 'Nome é obrigatório'),
-  percentage: z.coerce.number({ required_error: 'Porcentagem é obrigatório' }).min(0, 'Porcentagem é obrigatório'),
+  percentage: z.string()
+    .trim()
+    .min(1, { message: 'Preço deve ser no mínimo 1' })
+    .transform((value) => value.replace(',', '.'))
 })
 
 export type FormDataSchema = z.infer<typeof formValidationSchema>
@@ -59,8 +62,12 @@ export const TaxesForm = ({
     reset,
     ...props
   } = useForm<FormDataSchema>({
-    mode: 'onSubmit',
-    resolver: zodResolver(formValidationSchema)
+    mode: 'all',
+    resolver: zodResolver(formValidationSchema),
+    defaultValues: {
+      name: '',
+      percentage: ''
+    }
   })
 
   const completeFormProps: any = { register, handleSubmit, watch, setError, clearErrors, control, ...props }
@@ -78,7 +85,7 @@ export const TaxesForm = ({
       if (!id) {
         await mutateAsync({
           name: event.name,
-          percentage: event.percentage
+          percentage: event.percentage as unknown as number
         })
       }
 
@@ -86,7 +93,7 @@ export const TaxesForm = ({
         await updateAsync({
           id,
           name: event.name,
-          percentage: event.percentage
+          percentage: event.percentage as unknown as number
         })
       }
 
@@ -114,7 +121,7 @@ export const TaxesForm = ({
     try {
       const tax = await showAsync({ id: id as number })
       setValue('name', tax.name)
-      setValue('percentage', tax.percentage)
+      setValue('percentage', (tax.percentage * 100).toString())
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -148,6 +155,7 @@ export const TaxesForm = ({
             <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
               <TaxesFormContent
                 register={register}
+                control={control}
                 errors={errors}
               />
 
